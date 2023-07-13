@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, Component } from 'react';
-import { View, StyleSheet,FlatList, ScrollView, Dimensions,Alert, Text } from 'react-native';
+import { View, StyleSheet,FlatList, ScrollView, Dimensions,Alert, Text, SafeAreaView } from 'react-native';
 //import { Constants } from 'expo';
 
 const { width } = Dimensions.get('window');
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   },
   view: {
     marginTop: 100,
-    backgroundColor: 'blue',
+    backgroundColor: 'red',
     width: width - 80,
     margin: 10,
     height: 200,
@@ -38,7 +38,16 @@ const styles = StyleSheet.create({
   },
   view2: {
     marginTop: 100,
-    backgroundColor: 'red',
+    backgroundColor: 'blue',
+    width: width - 80,
+    margin: 10,
+    height: 200,
+    borderRadius: 10,
+    //paddingHorizontal : 30
+  },
+  view3: {
+    marginTop: 100,
+    backgroundColor: 'green',
     width: width - 80,
     margin: 10,
     height: 200,
@@ -57,17 +66,20 @@ const data = [
   {
     id: 0,
     color: 'red',
-    style: styles.view
+    style: styles.view,
+    label: "A red credit card"
   },
   {
     id: 1,
     color: 'blue',
-      style: styles.view2
+      style: styles.view2,
+      label: 'a blue credit card'
   },
   {
     id: 2,
     color: 'green',
-    style: styles.view
+    style: styles.view3,
+    label: 'A green credit card'
   }
 ]
 
@@ -79,29 +91,30 @@ const Carousel = () =>  {
 
   const [viewable, setViewable] = useState(0)
 
-  const onViewableItemsChanged = (visibilityStates) => {
-      const viewable = visibilityStates.changed.filter(item => item.isViewable)[0]?.index
-      setViewable(viewable)
-  }
+    const onViewableItemsChanged = (visibilityStates) => {
+        const viewable = visibilityStates.changed.filter(item => item.isViewable)[0]?.index
+        setViewable(viewable)
+    }
 
     const viewabilityConfigCallbackPairs = useRef([{ viewabilityConfig, onViewableItemsChanged }])
 
     return (
-      <>
+      <SafeAreaView>
+        <Text>Label: {data[viewable]?.label}</Text>
         <FlatList 
           viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
           horizontal={true}
           snapToAlignment="start"
           decelerationRate={"fast"}
-          snapToInterval={width - 60}
+          snapToInterval={width - 80}
           data={data}
           keyExtractor={({ id}) => id}
           renderItem={({ item }) => <Card {...item} />}
         />
         <View style={styles.circles}>
-          {data.map((_, index) => <View key={index} style={{...styles.circle, backgroundColor: viewable === index ? 'red': 'gray' }} />)}
+          {data.map((_, index) => <View key={index} style={{...styles.circle, backgroundColor: viewable === index ? data[index].color: 'gray' }} />)}
         </View>
-      </>
+      </SafeAreaView>
     );
 }
 
